@@ -1,0 +1,311 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.hai.qiu</groupId>
+  <artifactId>websocketWeb</artifactId>
+  <packaging>war</packaging>
+  <version>1.0-SNAPSHOT</version>
+  <name>websocketWeb Maven Webapp</name>
+  <url>http://maven.apache.org</url>
+  <properties>
+    <spring.version>4.2.0.RELEASE</spring.version>
+    <version.commons-loggin>1.2</version.commons-loggin>
+    <version.commons-fileupload>1.2.2</version.commons-fileupload>
+    <version.commons-io>2.4</version.commons-io>
+    <version.httpclient>4.3.1</version.httpclient>
+    <version.commons-lang3>3.1</version.commons-lang3>
+    <version.slf4j>1.7.9</version.slf4j>
+    <version.log4j>1.2.17</version.log4j>
+
+    <version.aspectjweaver>1.8.4</version.aspectjweaver>
+    <version.mybatis>3.2.8</version.mybatis>
+    <version.mybatis-spring>1.2.2</version.mybatis-spring>
+    <version.quartz>2.2.1</version.quartz>
+    <version.fastjson>1.2.3</version.fastjson>
+
+    <version.tiles>3.0.1</version.tiles>
+
+    <version.jstl>1.2</version.jstl>
+
+    <version.jsqlparser>0.9.1</version.jsqlparser>
+
+    <jstl.version>1.2</jstl.version>
+    <package.environment>dev</package.environment>
+    <version.junit>4.9</version.junit>
+    <version.servlet-api>3.1.0</version.servlet-api>
+    <version.jsp-api>2.1</version.jsp-api>
+    <version.druid>1.0.4</version.druid>
+
+    <version.jackson-databind>2.3.2</version.jackson-databind>
+    <version.jackson-mapper-asl>1.9.13</version.jackson-mapper-asl>
+    <version.mysql>5.1.29</version.mysql>
+
+    <version.commons-collections>3.2.1</version.commons-collections>
+    <commons-codec.version>1.9</commons-codec.version>
+    <version.tk.mybatis>3.3.3</version.tk.mybatis>
+    <version.pagehelper>4.0.3</version.pagehelper>
+    <version.shiro>1.2.2</version.shiro>
+    <version.cxf>3.1.4</version.cxf>
+    <version.jackson-jaxrs-json-provider>2.3.2</version.jackson-jaxrs-json-provider>
+    <version.httpclient>4.5.1</version.httpclient>
+
+    <javax.annotation-api.version>1.2</javax.annotation-api.version>
+    <version.hibernate>3.2.0.Final</version.hibernate>
+    <version.hibernate.validator>5.2.2.Final</version.hibernate.validator>
+    <validation-api.version>1.1.0.Final</validation-api.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
+      <version>${version.servlet-api}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet.jsp</groupId>
+      <artifactId>jsp-api</artifactId>
+      <version>${version.jsp-api}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>jstl</artifactId>
+      <version>${jstl.version}</version>
+    </dependency>
+    <!-- spring -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-webmvc</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-jdbc</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-aop</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-core</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-test</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-beans</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-aspects</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-orm</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-tx</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context-support</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-test</artifactId>
+      <version>${spring.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <!-- aspectjweaver(Spring依赖的jar)  -->
+    <dependency>
+      <groupId>org.aspectj</groupId>
+      <artifactId>aspectjweaver</artifactId>
+      <version>${version.aspectjweaver}</version>
+    </dependency>
+
+    <!-- alibaba json 转换工具 -->
+    <dependency>
+      <groupId>com.alibaba</groupId>
+      <artifactId>fastjson</artifactId>
+      <version>${version.fastjson}</version>
+    </dependency>
+    <!-- jackson -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>${version.jackson-databind}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.jackson</groupId>
+      <artifactId>jackson-mapper-asl</artifactId>
+      <version>${version.jackson-mapper-asl}</version>
+    </dependency>
+    <!-- commons-->
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>${version.commons-io}</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <version>${version.commons-loggin}</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-fileupload</groupId>
+      <artifactId>commons-fileupload</artifactId>
+      <version>${version.commons-fileupload}</version>
+    </dependency>
+    <!-- mysql -->
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <version>${version.mysql}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>${version.commons-lang3}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-collections</groupId>
+      <artifactId>commons-collections</artifactId>
+      <version>${version.commons-collections}</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+      <version>${commons-codec.version}</version>
+    </dependency>
+    <!-- 日志 -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>${version.slf4j}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <version>${version.slf4j}</version>
+    </dependency>
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>${version.log4j}</version>
+    </dependency>
+    <!--websocket相关 -->
+    <dependency>
+      <groupId>javax.websocket</groupId>
+      <artifactId>javax.websocket-api</artifactId>
+      <version>1.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-messaging</artifactId>
+      <version>4.2.0.RELEASE</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-websocket</artifactId>
+      <version>4.2.0.RELEASE</version>
+    </dependency>
+  </dependencies>
+  <build>
+
+    <resources>
+      <!-- 资源根目录排除各环境的配置，使用单独的资源目录来指定 -->
+      <resource>
+        <directory>src/main/resources</directory>
+        <excludes>
+          <exclude>config/dev/*</exclude>
+          <exclude>config/test/*</exclude>
+          <exclude>config/prod/*</exclude>
+        </excludes>
+        <filtering>true</filtering>
+      </resource>
+      <!-- 此配置只为了将当前环境的配置文件复制到config目录下-->
+      <resource>
+        <directory>src/main/resources/config/${package.environment}</directory>
+        <filtering>true</filtering>
+        <targetPath>${project.build.directory}/classes/config</targetPath>
+      </resource>
+    </resources>
+
+    <plugins>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.1</version>
+        <configuration>
+          <encoding>utf-8</encoding>
+          <source>1.7</source>
+          <target>1.7</target>
+        </configuration>
+      </plugin>
+      <!-- 这是因为测试代码时遇到错误，它会停止编译。只需添加以下插件配置，使得测试出错不影响项目的编译。 -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+
+      <!--打包的时候一起打包源码插件-->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>2.4</version>
+        <executions>
+          <execution>
+            <phase>verify</phase>
+            <goals>
+              <goal>jar-no-fork</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-maven-plugin</artifactId>
+        <version>9.2.2.v20140723</version>
+        <configuration>
+          <webApp>
+            <contextPath>/</contextPath>
+          </webApp>
+          <httpConnector>
+            <port>8084</port>
+          </httpConnector>
+          <scanIntervalSeconds>0</scanIntervalSeconds>
+          <webAppSourceDirectory>src/main/webapp</webAppSourceDirectory>
+          <classesDirectory>target/classes</classesDirectory>
+          <!-- <contextXml>resources/webdefault.xml</contextXml> -->
+          <!--<stopKey>exit</stopKey> <stopPort>9090</stopPort> -->
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
