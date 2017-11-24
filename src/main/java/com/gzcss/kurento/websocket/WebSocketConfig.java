@@ -1,5 +1,6 @@
 package com.gzcss.kurento.websocket;
 
+import org.kurento.client.KurentoClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
@@ -25,6 +26,11 @@ public class WebSocketConfig extends WebMvcConfigurerAdapter implements WebSocke
     @Bean
     public WebSocketHandler WebSocketPushHandler(){
         return new WebSocketPushHandler();
+    }
+
+    @Bean
+    public KurentoClient kurentoClient() {
+        return KurentoClient.create();
     }
 
 }
