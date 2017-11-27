@@ -308,7 +308,7 @@
         <package.environment>dev</package.environment>
       </properties>
       <activation>
-        <activeByDefault>true</activeByDefault>
+        <activeByDefault>false</activeByDefault>
       </activation>
     </profile>
     <!--测试开发环境 -->
@@ -317,6 +317,9 @@
       <properties>
         <package.environment>test</package.environment>
       </properties>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
     </profile>
     <!--生产开发环境 -->
     <profile>
@@ -324,6 +327,9 @@
       <properties>
         <package.environment>prod</package.environment>
       </properties>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
     </profile>
   </profiles>
 

@@ -33,7 +33,7 @@ public class WebSocketPushHandler implements WebSocketHandler {
 
     @Override
     public void afterConnectionEstablished(WebSocketSession webSocketSession) throws Exception {
-        System.out.println("成功进入了系统。。。");
+        log.info("成功进入了系统:"+webSocketSession.getLocalAddress()+"--"+webSocketSession.getId());
         users.add(webSocketSession);
     }
 
@@ -42,13 +42,6 @@ public class WebSocketPushHandler implements WebSocketHandler {
         //将消息进行转化，因为是消息是json数据，可能里面包含了发送给某个人的信息，所以需要用json相关的工具类处理之后再封装成TextMessage，我这儿并没有做处理，消息的封装格式一般有{from:xxxx,to:xxxxx,msg:xxxxx}，来自哪里，发送给谁，什么消息等等
         String msg = (String) webSocketMessage.getPayload();
         JSONObject jsonMessage = JSON.parseObject(msg);
-        System.out.println(jsonMessage.getString("name")+"--"+jsonMessage.getString("sex"));
-        //TextMessage textMessage = new TextMessage(msg);
-        //给所有用户群发消息
-        //sendMessagesToUsers(textMessage);
-        //给指定用户群发消息
-        //sendMessageToUser(userId,msg);
-
         log.debug("Incoming message from session '{}': {}", session.getId(), jsonMessage);
         switch (jsonMessage.getString("id")) {
             case "presenter":
@@ -108,39 +101,7 @@ public class WebSocketPushHandler implements WebSocketHandler {
         return false;
     }
 
-    /**
-     * 给所有的用户发送消息
-     */
-    public void sendMessagesToUsers(TextMessage message){
-        for(WebSocketSession user : users){
-            try {
-                //isOpen()在线就发送
-                if(user.isOpen()){
-                    user.sendMessage(message);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
-    /**
-     * 发送消息给指定的用户
-     */
-    public void sendMessageToUser(String userId,TextMessage message){
-/*        for(WebSocketSession user : users){
-            if(user.getAttributes().get(Constants.CURRENT_WEBSOCKET_USER).equals(userId)){
-                try {
-                    //isOpen()在线就发送
-                    if(user.isOpen()){
-                        user.sendMessage(message);
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }*/
-    }
 
     private void handleErrorResponse(Throwable throwable, WebSocketSession session, String responseId)
             throws IOException {

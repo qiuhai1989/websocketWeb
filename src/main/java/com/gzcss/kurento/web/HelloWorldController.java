@@ -21,4 +21,10 @@ public class HelloWorldController {
         return model;
     }
 
+    @RequestMapping("index.html")
+    public ModelAndView index(){
+        ModelAndView model = new ModelAndView("index");
+        return model;
+    }
+
 }

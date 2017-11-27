@@ -10,7 +10,7 @@
 <script type="text/javascript">
     var  ws;
     if ('WebSocket' in window) {
-        ws = new WebSocket("ws://localhost:8084/webSocketServer");
+        ws = new WebSocket("wss://172.16.3.61:8443/call");
     } else if ('MozWebSocket' in window) {
         ws = new MozWebSocket("ws://localhost:8084/webSocketServer");
     } else {

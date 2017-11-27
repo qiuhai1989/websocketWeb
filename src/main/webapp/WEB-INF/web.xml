@@ -13,6 +13,25 @@
       <param-name>contextConfigLocation</param-name>
       <param-value>classpath*:service.xml</param-value>
   </context-param>
+    <context-param>
+        <param-name>log4jConfigLocation</param-name>
+        <param-value>classpath:config/log4j.properties</param-value>
+    </context-param>
+    <!-- 开一条watchdog线程每60秒扫描一下配置文件的变化 -->
+    <context-param>
+        <param-name>log4jRefreshInterval</param-name>
+        <param-value>600000</param-value>
+    </context-param>
+
+    <servlet-mapping>
+         <servlet-name>default</servlet-name>
+         <url-pattern>*.js</url-pattern>
+         <url-pattern>*.css</url-pattern>
+         <url-pattern>/assets/*"</url-pattern>
+         <url-pattern>/images/*</url-pattern>
+         <url-pattern>/webjars/*</url-pattern>
+     </servlet-mapping>
+
 
     <servlet>
         <servlet-name>springmvc</servlet-name>
@@ -32,6 +51,10 @@
 
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+
+    <listener>
+        <listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
     </listener>
 
 </web-app>
