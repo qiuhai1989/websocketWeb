@@ -14,10 +14,10 @@
     <version.commons-io>2.4</version.commons-io>
     <version.httpclient>4.3.1</version.httpclient>
     <version.commons-lang3>3.1</version.commons-lang3>
-    <version.slf4j>1.7.9</version.slf4j>
+    <version.slf4j>1.7.13</version.slf4j>
     <version.log4j>1.2.17</version.log4j>
 
-    <version.aspectjweaver>1.8.4</version.aspectjweaver>
+    <version.aspectjweaver>1.8.6</version.aspectjweaver>
     <version.mybatis>3.2.8</version.mybatis>
     <version.mybatis-spring>1.2.2</version.mybatis-spring>
     <version.quartz>2.2.1</version.quartz>
@@ -267,6 +267,16 @@
       <groupId>org.webjars</groupId>
       <artifactId>webjars-locator</artifactId>
       <version>${webjars-locator.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.fasterxml.jackson.core</groupId>
+          <artifactId>jackson-databind</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.webjars.bower</groupId>

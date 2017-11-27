@@ -20,15 +20,7 @@
 
     <!-- 应为Spring MVC把所有的请求都拦截了，二静态资源为特殊的 -->
     <mvc:resources mapping="/resources/**" location="/resources/" />
-   <mvc:resources mapping="/webjars/**" location="classpath*:/META-INF/resources/webjars/">
-        <mvc:resource-chain resource-cache="false" auto-registration="false">
-            <mvc:resolvers>
-                <bean class="org.springframework.web.servlet.resource.VersionResourceResolver"></bean>
-                <bean class="org.springframework.web.servlet.resource.WebJarsResourceResolver"></bean>
-                <bean class="org.springframework.web.servlet.resource.PathResourceResolver"></bean>
-            </mvc:resolvers>
-        </mvc:resource-chain>
-    </mvc:resources>
+    <mvc:resources mapping="/webjars/**" location="classpath:/META-INF/resources/webjars/" />
     <context:component-scan base-package="com.gzcss.kurento" use-default-filters="false">
         <!--
         com.fq.controlller
