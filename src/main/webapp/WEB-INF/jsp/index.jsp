@@ -13,17 +13,17 @@
     <link rel="shortcut icon" href="${ctxRes}/img/kurento.png" type="image/png" />
 
     <link rel="stylesheet"
-          href="${ctx}/webjars/bootstrap/3.3.6/dist/css/bootstrap.min.css">
+          href="${ctx}/webjars/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet"
-          href="${ctx}/webjars/ekko-lightbox/4.0.2/dist/ekko-lightbox.min.css">
+          href="${ctx}/webjars/ekko-lightbox/dist/ekko-lightbox.min.css">
     <link rel="stylesheet" href="${ctx}/webjars/demo-console/1.5.1/index.css">
     <link rel="stylesheet" href="${ctxRes}/css/kurento.css">
 
-    <script src="${ctx}/webjars/jquery/1.12.3/dist/jquery.js"></script>
-    <script src="${ctx}/webjars/bootstrap/3.3.6/dist/js/bootstrap.min.js"></script>
-    <script src="${ctx}/webjars/ekko-lightbox/4.0.2/dist/ekko-lightbox.min.js"></script>
-    <script src="${ctx}/webjars/adapter.js/0.2.9/adapter.js"></script>
-    <script src="${ctx}/webjars/demo-console/1.5.1/index.js"></script>
+    <script src="${ctx}/webjars/jquery/dist/jquery.js"></script>
+    <script src="${ctx}/webjars/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="${ctx}/webjars/ekko-lightbox/dist/ekko-lightbox.min.js"></script>
+    <script src="${ctx}/webjars/adapter.js/adapter.js"></script>
+    <script src="${ctx}/webjars/demo-console/index.js"></script>
 
     <script src="${ctx}/js/kurento-utils.js"></script>
     <script src="${ctxRes}/js/index.js"></script>
