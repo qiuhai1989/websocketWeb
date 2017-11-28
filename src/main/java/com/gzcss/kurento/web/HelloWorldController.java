@@ -21,4 +21,15 @@ public class HelloWorldController {
         return model;
     }
 
+    /**
+     * 测试官方demo
+     * https://localhost:8443/hello/index.html
+     * @return
+     */
+    @RequestMapping("index.html")
+    public ModelAndView index(){
+        ModelAndView model = new ModelAndView("index");
+        return model;
+    }
+
 }

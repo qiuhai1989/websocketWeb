@@ -14,10 +14,10 @@
     <version.commons-io>2.4</version.commons-io>
     <version.httpclient>4.3.1</version.httpclient>
     <version.commons-lang3>3.1</version.commons-lang3>
-    <version.slf4j>1.7.9</version.slf4j>
+    <version.slf4j>1.7.13</version.slf4j>
     <version.log4j>1.2.17</version.log4j>
 
-    <version.aspectjweaver>1.8.4</version.aspectjweaver>
+    <version.aspectjweaver>1.8.6</version.aspectjweaver>
     <version.mybatis>3.2.8</version.mybatis>
     <version.mybatis-spring>1.2.2</version.mybatis-spring>
     <version.quartz>2.2.1</version.quartz>
@@ -53,6 +53,21 @@
     <version.hibernate>3.2.0.Final</version.hibernate>
     <version.hibernate.validator>5.2.2.Final</version.hibernate.validator>
     <validation-api.version>1.1.0.Final</validation-api.version>
+
+    <version.kurento-datachannelexample>6.6.0</version.kurento-datachannelexample>
+    <!-- Kurento versions -->
+    <version.kurento-java>6.6.2</version.kurento-java>
+    <version.kurento-utils-js>6.6.2</version.kurento-utils-js>
+    <!-- External versions -->
+    <webjars-locator.version>0.26</webjars-locator.version>
+    <webjars.bootstrap.version>3.3.6</webjars.bootstrap.version>
+    <webjars.draggabilly.version>2.1.0</webjars.draggabilly.version>
+    <webjars.demo-console.version>1.5.1</webjars.demo-console.version>
+    <webjars.adapter.js.version>0.2.9</webjars.adapter.js.version>
+    <webjars.jquery.version>1.12.3</webjars.jquery.version>
+    <webjars.ekko-lightbox.version>4.0.2</webjars.ekko-lightbox.version>
+    <webjars.event-emitter.version>4.3.0</webjars.event-emitter.version>
+    <webjars.jsnlog.js.version>2.20.1</webjars.jsnlog.js.version>
   </properties>
 
   <dependencies>
@@ -231,6 +246,68 @@
       <artifactId>spring-websocket</artifactId>
       <version>4.2.0.RELEASE</version>
     </dependency>
+    <!-- Kurento -->
+    <dependency>
+      <groupId>org.kurento.module</groupId>
+      <artifactId>datachannelexample</artifactId>
+      <version>${version.kurento-datachannelexample}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.kurento</groupId>
+      <artifactId>kurento-client</artifactId>
+      <version>${version.kurento-java}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.kurento</groupId>
+      <artifactId>kurento-utils-js</artifactId>
+      <version>${version.kurento-utils-js}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.webjars</groupId>
+      <artifactId>webjars-locator</artifactId>
+      <version>${webjars-locator.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.fasterxml.jackson.core</groupId>
+          <artifactId>jackson-databind</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.webjars.bower</groupId>
+      <artifactId>bootstrap</artifactId>
+      <version>${webjars.bootstrap.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.webjars</groupId>
+      <artifactId>draggabilly</artifactId>
+      <version>${webjars.draggabilly.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.webjars.bower</groupId>
+      <artifactId>demo-console</artifactId>
+      <version>${webjars.demo-console.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.webjars.bower</groupId>
+      <artifactId>adapter.js</artifactId>
+      <version>${webjars.adapter.js.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.webjars.bower</groupId>
+      <artifactId>jquery</artifactId>
+      <version>${webjars.jquery.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.webjars.bower</groupId>
+      <artifactId>ekko-lightbox</artifactId>
+      <version>${webjars.ekko-lightbox.version}</version>
+    </dependency>
   </dependencies>
 
   <profiles>
@@ -241,7 +318,7 @@
         <package.environment>dev</package.environment>
       </properties>
       <activation>
-        <activeByDefault>true</activeByDefault>
+        <activeByDefault>false</activeByDefault>
       </activation>
     </profile>
     <!--测试开发环境 -->
@@ -250,6 +327,9 @@
       <properties>
         <package.environment>test</package.environment>
       </properties>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
     </profile>
     <!--生产开发环境 -->
     <profile>
@@ -257,6 +337,9 @@
       <properties>
         <package.environment>prod</package.environment>
       </properties>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
     </profile>
   </profiles>
 
