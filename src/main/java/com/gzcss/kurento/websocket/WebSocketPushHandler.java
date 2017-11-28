@@ -87,7 +87,7 @@ public class WebSocketPushHandler implements WebSocketHandler {
     //后台错误信息处理方法
     @Override
     public void handleTransportError(WebSocketSession webSocketSession, Throwable throwable) throws Exception {
-
+        log.error(throwable.getMessage());
     }
 
     //用户退出后的处理，不如退出之后，要将用户信息从websocket的session中remove掉，这样用户就处于离线状态了，也不会占用系统资源
