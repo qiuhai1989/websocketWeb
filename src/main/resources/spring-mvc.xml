@@ -20,7 +20,6 @@
 
     <!-- 应为Spring MVC把所有的请求都拦截了，二静态资源为特殊的 -->
     <mvc:resources mapping="/resources/**" location="/resources/" />
-    <!--<mvc:resources mapping="/webjars/**" location="classpath:/META-INF/resources/webjars/" />-->
     <mvc:resources mapping="/webjars/**" location="classpath:/META-INF/resources/webjars/">
         <mvc:resource-chain resource-cache="false" auto-registration="false">
             <mvc:resolvers>
@@ -29,7 +28,7 @@
             </mvc:resolvers>
         </mvc:resource-chain>
     </mvc:resources>
-    <mvc:resources mapping="/js/**" location="classpath:/META-INF/resources/">
+    <mvc:resources mapping="/js/**" location="classpath:/META-INF/resources/js/">
         <mvc:resource-chain resource-cache="false" auto-registration="false">
             <mvc:resolvers>
                 <bean class="org.springframework.web.servlet.resource.WebJarsResourceResolver"></bean>
