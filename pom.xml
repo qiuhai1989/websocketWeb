@@ -318,7 +318,7 @@
         <package.environment>dev</package.environment>
       </properties>
       <activation>
-        <activeByDefault>false</activeByDefault>
+        <activeByDefault>true</activeByDefault>
       </activation>
     </profile>
     <!--测试开发环境 -->
@@ -328,7 +328,7 @@
         <package.environment>test</package.environment>
       </properties>
       <activation>
-        <activeByDefault>true</activeByDefault>
+        <activeByDefault>false</activeByDefault>
       </activation>
     </profile>
     <!--生产开发环境 -->

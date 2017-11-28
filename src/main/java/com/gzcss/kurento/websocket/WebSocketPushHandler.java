@@ -42,7 +42,7 @@ public class WebSocketPushHandler implements WebSocketHandler {
         //将消息进行转化，因为是消息是json数据，可能里面包含了发送给某个人的信息，所以需要用json相关的工具类处理之后再封装成TextMessage，我这儿并没有做处理，消息的封装格式一般有{from:xxxx,to:xxxxx,msg:xxxxx}，来自哪里，发送给谁，什么消息等等
         String msg = (String) webSocketMessage.getPayload();
         JSONObject jsonMessage = JSON.parseObject(msg);
-        log.debug("Incoming message from session '{}': {}", session.getId(), jsonMessage);
+        log.info("Incoming message from session '{}': {}", session.getId(), jsonMessage);
         switch (jsonMessage.getString("id")) {
             case "presenter":
                 try {
