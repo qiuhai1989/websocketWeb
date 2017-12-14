@@ -23,13 +23,13 @@ public class WebSocketPushHandler implements WebSocketHandler {
 
     private static final Logger log = LoggerFactory.getLogger(WebSocketPushHandler.class);
     private static final List<WebSocketSession> users = new ArrayList<>();
-    private final ConcurrentHashMap<String, UserSession> viewers = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, UserSessionDemo> viewers = new ConcurrentHashMap<>();
 
     @Autowired
     private KurentoClient kurento;
 
     private MediaPipeline pipeline;
-    private UserSession presenterUserSession;
+    private UserSessionDemo presenterUserSessionDemo;
 
     @Override
     public void afterConnectionEstablished(WebSocketSession webSocketSession) throws Exception {
@@ -60,10 +60,10 @@ public class WebSocketPushHandler implements WebSocketHandler {
                 break;
             case "onIceCandidate": {
                 JSONObject candidate = jsonMessage.getJSONObject("candidate");
-                UserSession user = null;
-                if (presenterUserSession != null) {
-                    if (presenterUserSession.getSession() == session) {
-                        user = presenterUserSession;
+                UserSessionDemo user = null;
+                if (presenterUserSessionDemo != null) {
+                    if (presenterUserSessionDemo.getSession() == session) {
+                        user = presenterUserSessionDemo;
                     } else {
                         user = viewers.get(session.getId());
                     }
@@ -116,13 +116,13 @@ public class WebSocketPushHandler implements WebSocketHandler {
 
     private synchronized void presenter(final WebSocketSession session, JSONObject jsonMessage)
             throws IOException {
-        if (presenterUserSession == null) {
-            presenterUserSession = new UserSession(session);
+        if (presenterUserSessionDemo == null) {
+            presenterUserSessionDemo = new UserSessionDemo(session);
 
             pipeline = kurento.createMediaPipeline();
-            presenterUserSession.setWebRtcEndpoint(new WebRtcEndpoint.Builder(pipeline).build());
+            presenterUserSessionDemo.setWebRtcEndpoint(new WebRtcEndpoint.Builder(pipeline).build());
 
-            WebRtcEndpoint presenterWebRtc = presenterUserSession.getWebRtcEndpoint();
+            WebRtcEndpoint presenterWebRtc = presenterUserSessionDemo.getWebRtcEndpoint();
 
             presenterWebRtc.addIceCandidateFoundListener(new EventListener<IceCandidateFoundEvent>() {
 
@@ -150,7 +150,7 @@ public class WebSocketPushHandler implements WebSocketHandler {
             response.addProperty("sdpAnswer", sdpAnswer);
 
             synchronized (session) {
-                presenterUserSession.sendMessage(response);
+                presenterUserSessionDemo.sendMessage(response);
             }
             presenterWebRtc.gatherCandidates();
 
@@ -166,7 +166,7 @@ public class WebSocketPushHandler implements WebSocketHandler {
 
     private synchronized void viewer(final WebSocketSession session, JSONObject jsonMessage)
             throws IOException {
-        if (presenterUserSession == null || presenterUserSession.getWebRtcEndpoint() == null) {
+        if (presenterUserSessionDemo == null || presenterUserSessionDemo.getWebRtcEndpoint() == null) {
             JsonObject response = new JsonObject();
             response.addProperty("id", "viewerResponse");
             response.addProperty("response", "rejected");
@@ -183,7 +183,7 @@ public class WebSocketPushHandler implements WebSocketHandler {
                 session.sendMessage(new TextMessage(response.toString()));
                 return;
             }
-            UserSession viewer = new UserSession(session);
+            UserSessionDemo viewer = new UserSessionDemo(session);
             viewers.put(session.getId(), viewer);
 
             WebRtcEndpoint nextWebRtc = new WebRtcEndpoint.Builder(pipeline).build();
@@ -206,7 +206,7 @@ public class WebSocketPushHandler implements WebSocketHandler {
             });
 
             viewer.setWebRtcEndpoint(nextWebRtc);
-            presenterUserSession.getWebRtcEndpoint().connect(nextWebRtc);//此处将主播端与观众端进行关联？
+            presenterUserSessionDemo.getWebRtcEndpoint().connect(nextWebRtc);//此处将主播端与观众端进行关联？
             String sdpOffer = jsonMessage.getString("sdpOffer");
             String sdpAnswer = nextWebRtc.processOffer(sdpOffer);
 
@@ -224,8 +224,8 @@ public class WebSocketPushHandler implements WebSocketHandler {
 
     private synchronized void stop(WebSocketSession session) throws IOException {
         String sessionId = session.getId();
-        if (presenterUserSession != null && presenterUserSession.getSession().getId().equals(sessionId)) {
-            for (UserSession viewer : viewers.values()) {
+        if (presenterUserSessionDemo != null && presenterUserSessionDemo.getSession().getId().equals(sessionId)) {
+            for (UserSessionDemo viewer : viewers.values()) {
                 JsonObject response = new JsonObject();
                 response.addProperty("id", "stopCommunication");
                 viewer.sendMessage(response);
@@ -236,7 +236,7 @@ public class WebSocketPushHandler implements WebSocketHandler {
                 pipeline.release();
             }
             pipeline = null;
-            presenterUserSession = null;
+            presenterUserSessionDemo = null;
         } else if (viewers.containsKey(sessionId)) {
             if (viewers.get(sessionId).getWebRtcEndpoint() != null) {
                 viewers.get(sessionId).getWebRtcEndpoint().release();

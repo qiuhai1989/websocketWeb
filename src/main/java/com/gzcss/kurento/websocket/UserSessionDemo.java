@@ -33,14 +33,14 @@ import java.io.IOException;
  * @author Boni Garcia (bgarcia@gsyc.es)
  * @since 5.0.0
  */
-public class UserSession {
+public class UserSessionDemo {
 
-  private static final Logger log = LoggerFactory.getLogger(UserSession.class);
+  private static final Logger log = LoggerFactory.getLogger(UserSessionDemo.class);
 
   private final WebSocketSession session;
   private WebRtcEndpoint webRtcEndpoint;
 
-  public UserSession(WebSocketSession session) {
+  public UserSessionDemo(WebSocketSession session) {
     this.session = session;
   }
 
