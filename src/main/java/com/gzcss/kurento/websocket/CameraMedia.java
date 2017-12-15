@@ -23,6 +23,7 @@ public class CameraMedia implements MediaEndpointOperate {
 
     public CameraMedia(UserSession userSession) {
         this.userSession = userSession;
+        this.outgoingMedia = new WebRtcEndpoint.Builder(userSession.getPipeline()).build();
     }
 
     /**

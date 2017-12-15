@@ -25,7 +25,7 @@ public class UserSession implements Closeable {
     private final MediaPipeline pipeline;
     private final String roomName;
 
-    private CameraMedia cameraMedia;
+    private CameraMedia cameraMedia;//摄像头来源流处理
 
 
     /**
@@ -45,6 +45,7 @@ public class UserSession implements Closeable {
         this.session = session;
         this.pipeline = pipeline;
         this.roomName = roomName;
+        cameraMedia = new CameraMedia(this);
     }
 
 
@@ -218,6 +219,9 @@ public class UserSession implements Closeable {
     }
 
     public CameraMedia getCameraMedia() {
+        if(cameraMedia == null){
+            cameraMedia = new CameraMedia(this);
+        }
         return cameraMedia;
     }
 
