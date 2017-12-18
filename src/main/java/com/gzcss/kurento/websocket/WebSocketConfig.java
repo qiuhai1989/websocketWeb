@@ -25,12 +25,22 @@ public class WebSocketConfig extends WebMvcConfigurerAdapter implements WebSocke
 
     @Bean
     public WebSocketHandler WebSocketPushHandler(){
-        return new WebSocketPushHandler();
+        return new CallHandler();
     }
 
     @Bean
     public KurentoClient kurentoClient() {
         return KurentoClient.create();
+    }
+
+    @Bean
+    public UserRegistry registry() {
+        return new UserRegistry();
+    }
+
+    @Bean
+    public RoomManager roomManager() {
+        return new RoomManager();
     }
 
 }
