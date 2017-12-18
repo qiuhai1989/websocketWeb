@@ -43,7 +43,7 @@ public class CameraMedia implements MediaEndpointOperate {
 
         final String ipSdpAnswer = this.getEndpointForUser(sender).processOffer(sdpOffer);
         final JsonObject scParams = new JsonObject();
-        scParams.addProperty("id", "receiveCameraVideoAnswer");
+        scParams.addProperty("id", "receiveVideoAnswer");
         scParams.addProperty("name", sender.getName());
         scParams.addProperty("sdpAnswer", ipSdpAnswer);
 
