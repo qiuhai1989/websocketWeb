@@ -276,60 +276,62 @@ public class WebSocketPushHandler implements WebSocketHandler {
     private synchronized void viewer(final WebSocketSession session, JSONObject jsonMessage)
             throws IOException {
         UserSession currentUser = registry.getBySession(session);
-        Room currentRoom = roomManager.getRoom(currentUser.getRoomName());
-        UserSession presenterUserSession = currentRoom.getPresenterUserSession();
-        if (presenterUserSession == null || presenterUserSession.getWebRtcEndpoint() == null) {
-            JsonObject response = new JsonObject();
-            response.addProperty("id", "viewerResponse");
-            response.addProperty("response", "rejected");
-            response.addProperty("message",
-                    "No active sender now. Become sender or . Try again later ...");
-            session.sendMessage(new TextMessage(response.toString()));
-        } else {
-            if (currentRoom.getViewers().containsKey(session.getId())) {
+        if(currentUser != null){
+            Room currentRoom = roomManager.getRoom(currentUser.getRoomName());
+            UserSession presenterUserSession = currentRoom.getPresenterUserSession();
+            if (presenterUserSession == null || presenterUserSession.getWebRtcEndpoint() == null) {
                 JsonObject response = new JsonObject();
                 response.addProperty("id", "viewerResponse");
                 response.addProperty("response", "rejected");
-                response.addProperty("message", "You are already viewing in this session. "
-                        + "Use a different browser to add additional viewers.");
+                response.addProperty("message",
+                        "No active sender now. Become sender or . Try again later ...");
                 session.sendMessage(new TextMessage(response.toString()));
-                return;
-            }
-
-
-            WebRtcEndpoint nextWebRtc = new WebRtcEndpoint.Builder(currentRoom.getPipeline()).build();
-
-            nextWebRtc.addIceCandidateFoundListener(new EventListener<IceCandidateFoundEvent>() {
-
-                @Override
-                public void onEvent(IceCandidateFoundEvent event) {
+            } else {
+                if (currentRoom.getViewers().containsKey(session.getId())) {
                     JsonObject response = new JsonObject();
-                    response.addProperty("id", "iceCandidate");
-                    response.add("candidate", JsonUtils.toJsonObject(event.getCandidate()));
-                    try {
-                        synchronized (session) {
-                            session.sendMessage(new TextMessage(response.toString()));
-                        }
-                    } catch (IOException e) {
-                        log.debug(e.getMessage());
-                    }
+                    response.addProperty("id", "viewerResponse");
+                    response.addProperty("response", "rejected");
+                    response.addProperty("message", "You are already viewing in this session. "
+                            + "Use a different browser to add additional viewers.");
+                    session.sendMessage(new TextMessage(response.toString()));
+                    return;
                 }
-            });
 
-            currentUser.setWebRtcEndpoint(nextWebRtc);
-            presenterUserSession.getWebRtcEndpoint().connect(nextWebRtc);//此处将主播端与观众端进行关联？
-            String sdpOffer = jsonMessage.getString("sdpOffer");
-            String sdpAnswer = nextWebRtc.processOffer(sdpOffer);
 
-            JsonObject response = new JsonObject();
-            response.addProperty("id", "viewerResponse");
-            response.addProperty("response", "accepted");
-            response.addProperty("sdpAnswer", sdpAnswer);
+                WebRtcEndpoint nextWebRtc = new WebRtcEndpoint.Builder(currentRoom.getPipeline()).build();
 
-            synchronized (currentUser) {
-                currentUser.sendMessage(response);
+                nextWebRtc.addIceCandidateFoundListener(new EventListener<IceCandidateFoundEvent>() {
+
+                    @Override
+                    public void onEvent(IceCandidateFoundEvent event) {
+                        JsonObject response = new JsonObject();
+                        response.addProperty("id", "iceCandidate");
+                        response.add("candidate", JsonUtils.toJsonObject(event.getCandidate()));
+                        try {
+                            synchronized (session) {
+                                session.sendMessage(new TextMessage(response.toString()));
+                            }
+                        } catch (IOException e) {
+                            log.debug(e.getMessage());
+                        }
+                    }
+                });
+
+                currentUser.setWebRtcEndpoint(nextWebRtc);
+                presenterUserSession.getWebRtcEndpoint().connect(nextWebRtc);//此处将主播端与观众端进行关联？
+                String sdpOffer = jsonMessage.getString("sdpOffer");
+                String sdpAnswer = nextWebRtc.processOffer(sdpOffer);
+
+                JsonObject response = new JsonObject();
+                response.addProperty("id", "viewerResponse");
+                response.addProperty("response", "accepted");
+                response.addProperty("sdpAnswer", sdpAnswer);
+
+                synchronized (currentUser) {
+                    currentUser.sendMessage(response);
+                }
+                nextWebRtc.gatherCandidates();
             }
-            nextWebRtc.gatherCandidates();
         }
     }
 
@@ -399,8 +401,9 @@ public class WebSocketPushHandler implements WebSocketHandler {
                 presenterUserSession.closeCamera();
                 currentRoom.clearZhuBo();
                 log.info("Releasing media pipeline");
-            } else if (viewers.containsKey(sessionId)) {//如果是观众关闭摄像头
-
+            } else {//如果是观众清除对应连接对象
+                currentUser.closeCamera();
+                currentRoom.clearSpecifiedViewer(currentUser);
             }
         }
     }

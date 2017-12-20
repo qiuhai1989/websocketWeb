@@ -34,7 +34,7 @@ public class Room  implements Closeable {
      */
     private UserSession presenterUserSession;
     /**
-     * 观众会话列表
+     * 观众会话列表 key（userSession.name）/value(userSession)
      */
     private final ConcurrentHashMap<String, UserSession> viewers = new ConcurrentHashMap<>();
 
@@ -143,7 +143,15 @@ public class Room  implements Closeable {
         return viewers;
     }
 
+    /**
+     * 清空主播信息
+     */
     public void clearZhuBo(){
         this.presenterUserSession = null;
     }
+
+    public void clearSpecifiedViewer(UserSession removeUser){
+        this.viewers.remove(removeUser.getName());
+    }
+
 }
