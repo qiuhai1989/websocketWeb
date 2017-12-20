@@ -102,10 +102,13 @@ public class WebSocketPushHandler implements WebSocketHandler {
 
     private void joinRoom(JSONObject params, WebSocketSession session) throws IOException {
         final String roomName = params.getString("room");
-        final String name = params.getString("name");
+        String name = params.getString("name");
         final Boolean isZhuBo = params.getBoolean("isZhuBo") == null?Boolean.FALSE:params.getBoolean("isZhuBo");
         log.info("PARTICIPANT {}: trying to join room {}", name, roomName);
-
+        //如果游客登录则使用ip作为用户名
+        if(name == null){
+            name = session.getLocalAddress().getAddress().getHostAddress();
+        }
         Room room = roomManager.getRoom(roomName);
         boolean isJoinSuccess ;
         if(room.isUserExisted(name,isZhuBo)){
