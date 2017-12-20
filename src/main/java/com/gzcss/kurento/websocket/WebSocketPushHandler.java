@@ -221,7 +221,7 @@ public class WebSocketPushHandler implements WebSocketHandler {
                     }
                 }
             });
-            presenterUserSession.setWebRtcEndpoint(presenterWebRtc);
+            presenterUserSession.setCameraEndpoint(presenterWebRtc);
             String sdpOffer = jsonMessage.getString("sdpOffer");
             String sdpAnswer = presenterWebRtc.processOffer(sdpOffer);
 
@@ -282,7 +282,7 @@ public class WebSocketPushHandler implements WebSocketHandler {
         if(currentUser != null){
             Room currentRoom = roomManager.getRoom(currentUser.getRoomName());
             UserSession presenterUserSession = currentRoom.getPresenterUserSession();
-            if (presenterUserSession == null || presenterUserSession.getWebRtcEndpoint() == null) {
+            if (presenterUserSession == null || presenterUserSession.getCameraEndpoint() == null) {
                 JsonObject response = new JsonObject();
                 response.addProperty("id", "viewerResponse");
                 response.addProperty("response", "rejected");
@@ -320,8 +320,8 @@ public class WebSocketPushHandler implements WebSocketHandler {
                     }
                 });
 
-                currentUser.setWebRtcEndpoint(nextWebRtc);
-                presenterUserSession.getWebRtcEndpoint().connect(nextWebRtc);//此处将主播端与观众端进行关联？
+                currentUser.setCameraEndpoint(nextWebRtc);
+                presenterUserSession.getCameraEndpoint().connect(nextWebRtc);//此处将主播端与观众端进行关联？
                 String sdpOffer = jsonMessage.getString("sdpOffer");
                 String sdpAnswer = nextWebRtc.processOffer(sdpOffer);
 

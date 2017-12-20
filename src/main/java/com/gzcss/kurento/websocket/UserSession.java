@@ -40,7 +40,7 @@ public class UserSession implements Closeable {
   private static final Logger log = LoggerFactory.getLogger(UserSession.class);
 
   private final WebSocketSession session;
-  private WebRtcEndpoint webRtcEndpoint;
+  private WebRtcEndpoint cameraEndpoint;
   private WebRtcEndpoint shareMediaEndpoint;
   private final String name;
   private final String roomName;
@@ -65,21 +65,21 @@ public class UserSession implements Closeable {
   }
 
   public void closeCamera(){
-    if(webRtcEndpoint != null){
-      webRtcEndpoint.release(new Continuation<Void>() {
+    if(cameraEndpoint != null){
+      cameraEndpoint.release(new Continuation<Void>() {
         @Override
         public void onSuccess(Void result) throws Exception {
-          log.trace("webRtcEndpoint {}: Released successfully",
+          log.trace("cameraEndpoint {}: Released successfully",
                   UserSession.this.name);
         }
 
         @Override
         public void onError(Throwable cause) throws Exception {
-          log.trace("webRtcEndpoint {}: Released failed",
+          log.trace("cameraEndpoint {}: Released failed",
                   UserSession.this.name);
         }
       });
-      webRtcEndpoint = null;
+      cameraEndpoint = null;
     }
   }
 
@@ -110,12 +110,12 @@ public class UserSession implements Closeable {
 
   }
 
-  public WebRtcEndpoint getWebRtcEndpoint() {
-    return webRtcEndpoint;
+  public WebRtcEndpoint getCameraEndpoint() {
+    return cameraEndpoint;
   }
 
-  public void setWebRtcEndpoint(WebRtcEndpoint webRtcEndpoint) {
-    this.webRtcEndpoint = webRtcEndpoint;
+  public void setCameraEndpoint(WebRtcEndpoint cameraEndpoint) {
+    this.cameraEndpoint = cameraEndpoint;
   }
 
   public WebRtcEndpoint getShareMediaEndpoint() {
@@ -127,7 +127,7 @@ public class UserSession implements Closeable {
   }
 
   public void addCandidate(IceCandidate candidate) {
-    webRtcEndpoint.addIceCandidate(candidate);
+    cameraEndpoint.addIceCandidate(candidate);
   }
 
   public void addCandidateShareMedia(IceCandidate candidate) {
