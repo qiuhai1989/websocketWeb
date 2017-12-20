@@ -18,6 +18,7 @@
 package com.gzcss.kurento.websocket;
 
 import com.google.gson.JsonObject;
+import org.kurento.client.Continuation;
 import org.kurento.client.IceCandidate;
 import org.kurento.client.WebRtcEndpoint;
 import org.slf4j.Logger;
@@ -25,24 +26,34 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
+import java.io.Closeable;
 import java.io.IOException;
 
 /**
  * User session.
- * 
+ *
  * @author Boni Garcia (bgarcia@gsyc.es)
  * @since 5.0.0
  */
-public class UserSession {
+public class UserSession implements Closeable {
 
   private static final Logger log = LoggerFactory.getLogger(UserSession.class);
 
   private final WebSocketSession session;
   private WebRtcEndpoint webRtcEndpoint;
+  private WebRtcEndpoint shareMediaEndpoint;
+  private final String name;
+  private final String roomName;
+  private final Boolean isZhuBo;//主播标识
 
-  public UserSession(WebSocketSession session) {
+  public UserSession(WebSocketSession session, String name, String roomName,Boolean isZhuBo) {
     this.session = session;
+    this.name = name;
+    this.roomName = roomName;
+    this.isZhuBo = isZhuBo;
   }
+
+
 
   public WebSocketSession getSession() {
     return session;
@@ -53,6 +64,52 @@ public class UserSession {
     session.sendMessage(new TextMessage(message.toString()));
   }
 
+  public void closeCamera(){
+    if(webRtcEndpoint != null){
+      webRtcEndpoint.release(new Continuation<Void>() {
+        @Override
+        public void onSuccess(Void result) throws Exception {
+          log.trace("webRtcEndpoint {}: Released successfully",
+                  UserSession.this.name);
+        }
+
+        @Override
+        public void onError(Throwable cause) throws Exception {
+          log.trace("webRtcEndpoint {}: Released failed",
+                  UserSession.this.name);
+        }
+      });
+      webRtcEndpoint = null;
+    }
+  }
+
+  public void closeShareMedia(){
+    if(shareMediaEndpoint != null){
+      shareMediaEndpoint.release(new Continuation<Void>() {
+        @Override
+        public void onSuccess(Void result) throws Exception {
+          log.trace("shareMediaEndpoint {}: Released successfully",
+                  UserSession.this.name);
+        }
+
+        @Override
+        public void onError(Throwable cause) throws Exception {
+          log.trace("shareMediaEndpoint {}: Released failed",
+                  UserSession.this.name);
+        }
+      });
+      shareMediaEndpoint = null;
+    }
+  }
+
+
+  @Override
+  public void close() throws IOException {
+      closeCamera();
+      closeShareMedia();
+
+  }
+
   public WebRtcEndpoint getWebRtcEndpoint() {
     return webRtcEndpoint;
   }
@@ -61,7 +118,49 @@ public class UserSession {
     this.webRtcEndpoint = webRtcEndpoint;
   }
 
+  public WebRtcEndpoint getShareMediaEndpoint() {
+    return shareMediaEndpoint;
+  }
+
+  public void setShareMediaEndpoint(WebRtcEndpoint shareMediaEndpoint) {
+    this.shareMediaEndpoint = shareMediaEndpoint;
+  }
+
   public void addCandidate(IceCandidate candidate) {
     webRtcEndpoint.addIceCandidate(candidate);
+  }
+
+  public void addCandidateShareMedia(IceCandidate candidate) {
+    shareMediaEndpoint.addIceCandidate(candidate);
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public String getRoomName() {
+    return roomName;
+  }
+
+  public Boolean getZhuBo() {
+    return isZhuBo;
+  }
+
+  @Override
+  public int hashCode() {
+    return (this.getName()+this.getRoomName()).hashCode();
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if(obj == null){
+      return false;
+    }
+    if(obj instanceof UserSession){
+       UserSession userSession = (UserSession)obj;
+       return this.getName().equals(userSession.getName())
+               && this.getRoomName().equals(userSession.getRoomName());
+    }
+    return super.equals(obj);
   }
 }

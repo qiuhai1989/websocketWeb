@@ -33,4 +33,12 @@ public class WebSocketConfig extends WebMvcConfigurerAdapter implements WebSocke
         return KurentoClient.create();
     }
 
+    @Bean
+    public RoomManager roomManager(){
+        return new RoomManager();
+    }
+    @Bean
+    public UserRegistry userRegistry(){
+        return new UserRegistry();
+    }
 }
