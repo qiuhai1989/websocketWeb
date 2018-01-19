@@ -21,10 +21,6 @@ public class MyWebSocketInterceptor implements HandshakeInterceptor {
         if (request instanceof ServletServerHttpRequest) {
             ServletServerHttpRequest servletRequest  = (ServletServerHttpRequest) request;
             HttpServletRequest httpRequest = servletRequest.getServletRequest();
-            //Constants.CURRENT_USER这个是我定义的常量，是request域的key，通过key就可以获取到用户信息了
-            //TsUser user = (TsUser)httpRequest.getAttribute(Constants.CURRENT_USER);
-            //Constants.CURRENT_WEBSOCKET_USER也是常量，用来存储WebsocketSession的key值
-            //attributes.put(Constants.CURRENT_WEBSOCKET_USER,user.getUserid());
         }
         return true;
     }
