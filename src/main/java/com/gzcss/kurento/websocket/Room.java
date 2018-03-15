@@ -3,7 +3,9 @@ package com.gzcss.kurento.websocket;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by qiu on 2018/3/13.
@@ -24,18 +26,25 @@ public class Room {
         this.pk = pk;
     }
 
-    public List<UserSession> getUserSessionList() {
-        return userSessionList;
+    public Map<String, UserSession> getUserSessionMap() {
+        return userSessionMap;
     }
 
-    public void setUserSessionList(List<UserSession> userSessionList) {
-        this.userSessionList = userSessionList;
+    public void setUserSessionMap(Map<String, UserSession> userSessionMap) {
+        this.userSessionMap = userSessionMap;
     }
 
-    private List<UserSession> userSessionList = new ArrayList<>();
+    private Map<String,UserSession> userSessionMap = new HashMap<>();
 
     public void removeSpecifiedUser(UserSession userSession){
-        userSessionList.remove(userSession);
+        userSessionMap.remove(userSession.getUserPk());
     }
 
+    public void addUser(UserSession userSession){
+        userSessionMap.put(userSession.getUserPk(),userSession);
+    }
+
+    public UserSession getUser(String userPk){
+        return userSessionMap.get(userPk);
+    }
 }

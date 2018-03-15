@@ -19,7 +19,7 @@ import java.util.Map;
 public class WebSocketPushHandler implements WebSocketHandler {
     private static Logger log = LoggerFactory.getLogger(WebSocketPushHandler.class);
     private static final List<WebSocketSession> users = new ArrayList<>();
-    private static final Map<String,UserSession>userSessionHashMap = new HashMap<>();
+    //private static final Map<String,UserSession>userSessionHashMap = new HashMap<>();
     private static final Map<String,UserSession>userSessionHashMapBySeesionId = new HashMap<>();
     private Map<String,Room> rooms = new HashMap<>();
     @Override
@@ -53,8 +53,8 @@ public class WebSocketPushHandler implements WebSocketHandler {
                     rooms.put(roomPk,curRoom);
                 }
                 boolean isExists = false ;
-                for(UserSession userSession:curRoom.getUserSessionList()){
-                    if(userSession.getUserPk().equals(sendToPk)){
+                for(String usePk:curRoom.getUserSessionMap().keySet()){
+                    if(usePk.equals(sendToPk)){
                         isExists = true;
                         break;
                     }
@@ -64,10 +64,10 @@ public class WebSocketPushHandler implements WebSocketHandler {
                     result.put("type","login");
                     result.put("success",false);
                     TextMessage textMessage = new TextMessage(result.toJSONString());
-                    sendMessageToUser(sendToPk,textMessage);
+                    webSocketSession.sendMessage(textMessage);
                 }else {
                     UserSession newUser = new UserSession(roomPk,sendToPk,webSocketSession);
-                    curRoom.getUserSessionList().add(newUser);
+                    curRoom.addUser(newUser);
                     JSONObject result = new JSONObject();
                     if(sendToPk.equals("v-hai")){
                         result.put("type","login");
@@ -81,23 +81,23 @@ public class WebSocketPushHandler implements WebSocketHandler {
                         result.put("sendFrom",sendToPk);
 
                     }
-                    userSessionHashMap.put(sendToPk,newUser);
+                    //userSessionHashMap.put(sendToPk,newUser);
                     userSessionHashMapBySeesionId.put(webSocketSession.getId(),newUser);
                     TextMessage textMessage = new TextMessage(result.toJSONString());
-                    sendMessageToUser(sendToPk,textMessage);
+                    sendMessageToUser(newUser,textMessage);
                 }
 
                 break;
             case "offer":
                 log.info("Sending offer to room "+roomPk+" name "+sendToPk);
-                UserSession userSession = getUserSession(roomPk,sendToPk);
-                if (userSession != null) {
+                sendToUser = getUserSession(roomPk,sendToPk);
+                if (sendToUser != null) {
                     JSONObject result = new JSONObject();
                     result.put("type","offer");
                     result.put("offer",jsonObject.getString("offer"));
                     result.put("sendFrom",getUserSessionBySession(webSocketSession).getUserPk());
                     TextMessage textMessage = new TextMessage(result.toJSONString());
-                    sendMessageToUser(sendToPk,textMessage);
+                    sendMessageToUser(sendToUser,textMessage);
                 }
                 break;
             case "answer":
@@ -109,7 +109,7 @@ public class WebSocketPushHandler implements WebSocketHandler {
                     result.put("answer",jsonObject.getString("answer"));
                     result.put("sendFrom",getUserSessionBySession(webSocketSession).getUserPk());
                     TextMessage textMessage = new TextMessage(result.toJSONString());
-                    sendMessageToUser(sendToPk,textMessage);
+                    sendMessageToUser(sendToUser,textMessage);
                 }else{
                     log.info("room "+roomPk+" name"+sendToPk +" not found");
                 }
@@ -123,7 +123,7 @@ public class WebSocketPushHandler implements WebSocketHandler {
                     result.put("candidate",jsonObject.getString("candidate"));
                     result.put("sendFrom",getUserSessionBySession(webSocketSession).getUserPk());
                     TextMessage textMessage = new TextMessage(result.toJSONString());
-                    sendMessageToUser(sendToPk,textMessage);
+                    sendMessageToUser(sendToUser,textMessage);
                 }else{
                     log.info("room "+roomPk+" name"+sendToPk +" not found");
                 }
@@ -136,7 +136,7 @@ public class WebSocketPushHandler implements WebSocketHandler {
                     result.put("type","leave");
                     result.put("sendFrom",getUserSessionBySession(webSocketSession).getUserPk());
                     TextMessage textMessage = new TextMessage(result.toJSONString());
-                    sendMessageToUser(sendToPk,textMessage);
+                    sendMessageToUser(sendToUser,textMessage);
                 }else{
                     log.info("room "+roomPk+" name"+sendToPk +" not found");
                 }
@@ -150,7 +150,7 @@ public class WebSocketPushHandler implements WebSocketHandler {
                     result.put("msg",jsonObject.getString("msg"));
                     result.put("sendFrom",getUserSessionBySession(webSocketSession).getUserPk());
                     TextMessage textMessage = new TextMessage(result.toJSONString());
-                    sendMessageToUser(sendToPk,textMessage);
+                    sendMessageToUser(sendToUser,textMessage);
                 }else{
                     log.info("room "+roomPk+" name"+sendToPk +" not found");
                 }
@@ -164,7 +164,7 @@ public class WebSocketPushHandler implements WebSocketHandler {
                     result.put("msg",jsonObject.getString("msg"));
                     result.put("sendFrom",getUserSessionBySession(webSocketSession).getUserPk());
                     TextMessage textMessage = new TextMessage(result.toJSONString());
-                    sendMessageToUser(sendToPk,textMessage);
+                    sendMessageToUser(sendToUser,textMessage);
                 }else{
                     log.info("room "+roomPk+" name"+sendToPk +" not found");
                 }
@@ -175,7 +175,7 @@ public class WebSocketPushHandler implements WebSocketHandler {
                 result.put("message","Unrecognized command: " + jsonObject.getString("type"));
                 result.put("sendFrom",getUserSessionBySession(webSocketSession).getUserPk());
                 TextMessage textMessage = new TextMessage(result.toJSONString());
-                sendMessageToUser(sendToPk,textMessage);
+                sendMessageToUser(sendToPk,roomPk,textMessage);
                 break;
         }
 
@@ -184,7 +184,7 @@ public class WebSocketPushHandler implements WebSocketHandler {
     //后台错误信息处理方法
     @Override
     public void handleTransportError(WebSocketSession webSocketSession, Throwable throwable) throws Exception {
-
+        //log.error(throwable.getMessage(),throwable);
     }
 
     //用户退出后的处理，不如退出之后，要将用户信息从websocket的session中remove掉，这样用户就处于离线状态了，也不会占用系统资源
@@ -199,7 +199,7 @@ public class WebSocketPushHandler implements WebSocketHandler {
         log.info("close pk:"+userPk+",room:"+roomPk);
         Room currentRoom = rooms.get(roomPk);
         if(currentRoom != null){
-            for(UserSession user:currentRoom.getUserSessionList()){
+            for(UserSession user:currentRoom.getUserSessionMap().values()){
                 if(user.getUserPk().equals(userPk)){
                     continue;
                 }
@@ -207,9 +207,10 @@ public class WebSocketPushHandler implements WebSocketHandler {
                 result.put("type","leave");
                 result.put("sendFrom",getUserSessionBySession(webSocketSession).getUserPk());
                 TextMessage textMessage = new TextMessage(result.toJSONString());
-                sendMessageToUser(user.getUserPk(),textMessage);
+                sendMessageToUser(user,textMessage);
             }
         }
+        removeConnection(webSocketSession);
 
     }
 
@@ -237,7 +238,7 @@ public class WebSocketPushHandler implements WebSocketHandler {
     /**
      * 发送消息给指定的用户
      */
-    public void sendMessageToUser(String userId,TextMessage message){
+    public void sendMessageToUser(String userPK,String roomPk,TextMessage message){
 /*        for(WebSocketSession user : users){
             if(user.getAttributes().get(Constants.CURRENT_WEBSOCKET_USER).equals(userId)){
                 try {
@@ -250,11 +251,26 @@ public class WebSocketPushHandler implements WebSocketHandler {
                 }
             }
         }*/
-        UserSession userSession = userSessionHashMap.get(userId);
+        Room currentRoom = rooms.get(roomPk);
+        UserSession userSession = currentRoom.getUser(userPK);
+        try {
+//            userSession.getSocketSession().sendMessage(message);
+            userSession.sendMessageToClient(message);
+        } catch (IOException e) {
+//            e.printStackTrace();
+            log.error(e.getMessage(),e);
+        }
+    }
+
+    /**
+     * 发送消息给指定的用户
+     */
+    public void sendMessageToUser(UserSession userSession,TextMessage message){
+
+
         try {
             userSession.getSocketSession().sendMessage(message);
         } catch (IOException e) {
-//            e.printStackTrace();
             log.error(e.getMessage(),e);
         }
     }
@@ -262,11 +278,7 @@ public class WebSocketPushHandler implements WebSocketHandler {
     private UserSession getUserSession(String room ,String pk){
         Room currentRoom = rooms.get(room);
         if(currentRoom != null){
-            for(UserSession userSession:currentRoom.getUserSessionList()){
-                if(userSession.getUserPk().equals(pk)){
-                    return userSession;
-                }
-            }
+            return currentRoom.getUser(pk);
         }
 
         return null;
@@ -292,6 +304,7 @@ public class WebSocketPushHandler implements WebSocketHandler {
         if(currentRoom !=null){
             currentRoom.removeSpecifiedUser(userSession);
         }
+        userSessionHashMapBySeesionId.remove(socketSession.getId());
     }
 
 }
