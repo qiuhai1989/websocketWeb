@@ -169,6 +169,21 @@ public class WebSocketPushHandler implements WebSocketHandler {
                     log.info("room "+roomPk+" name"+sendToPk +" not found");
                 }
                 break;
+            case "liveOpenNotification":
+                Room currentRoom = rooms.get(roomPk);
+                UserSession userSession = getUserSessionBySession(webSocketSession);
+                for(UserSession viewer:currentRoom.getUserSessionMap().values()){
+                    //通知所有观众(除了主播自己)开播了
+                    if(viewer.equals(userSession)){
+                        continue;
+                    }
+                    JSONObject result = new JSONObject();
+                    result.put("type","liveOpenNotification");
+                    result.put("sendFrom",userSession.getUserPk());
+                    TextMessage textMessage = new TextMessage(result.toJSONString());
+                    sendMessageToUser(viewer,textMessage);
+                }
+                break;
             default:
                 JSONObject result = new JSONObject();
                 result.put("type","error");
@@ -239,18 +254,7 @@ public class WebSocketPushHandler implements WebSocketHandler {
      * 发送消息给指定的用户
      */
     public void sendMessageToUser(String userPK,String roomPk,TextMessage message){
-/*        for(WebSocketSession user : users){
-            if(user.getAttributes().get(Constants.CURRENT_WEBSOCKET_USER).equals(userId)){
-                try {
-                    //isOpen()在线就发送
-                    if(user.isOpen()){
-                        user.sendMessage(message);
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }*/
+
         Room currentRoom = rooms.get(roomPk);
         UserSession userSession = currentRoom.getUser(userPK);
         try {
